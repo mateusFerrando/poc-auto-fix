@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,14 +35,16 @@ public class GreetingResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getUsers(@PathParam("name") String name) throws SQLException {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users WHERE name = '" + name + "'";
+        String sql = "SELECT * FROM users WHERE name = ?";
 
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            try (ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                users.add(new User(rs.getString("name"), rs.getString("email")));
+                while (rs.next()) {
+                    users.add(new User(rs.getString("name"), rs.getString("email")));
+                }
             }
         }
 

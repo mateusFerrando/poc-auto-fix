@@ -48,6 +48,25 @@ public class GreetingResource {
         return users;
     }
 
+     @GET
+    @Path("/users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<User> getUser(@PathParam("name") String name) throws SQLException {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE name = '" + name + "'";
+
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                users.add(new User(rs.getString("name"), rs.getString("email")));
+            }
+        }
+
+        return users;
+    }
+
     public static class User {
         public String name;
         public String email;

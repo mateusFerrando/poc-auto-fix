@@ -13,11 +13,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Path("/hello")
 public class GreetingResource {
 
     private final AgroalDataSource dataSource;
+
+    private String naoUsada;
 
     public GreetingResource(AgroalDataSource dataSource) {
         this.dataSource = dataSource;
